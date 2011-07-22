@@ -23,7 +23,7 @@ void setup() {
   command = "";
   com[0]=(Command){"HELP", "Prints this. Try HELP <CMD> for more", command_help};
   com[1]=(Command){"LSA", "Lists status of all analog pins", command_list_analog};
-  com[2]=(Command){"ANR", "Reads a specific analog pin", command_read_analog};
+  com[2]=(Command){"ANR", "Reads a specific analog pin", command_analog_read};
   com[3]=(Command){"ANW", "Writes to an analog pin", command_analog_write};
   com[4]=(Command){"PINM", "Sets the mode of a digital pin [pin IN|OUT]", command_setmode};
   com[5]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
@@ -123,7 +123,7 @@ void command_list_analog(String args) {
   }
 }
 
-void command_read_analog(String args) {
+void command_analog_read(String args) {
     // reads a specified analog pin
     // argument passed in should simply be a number and it's that one we read.
     // we only need to grab the first char too because it's a number from 0-5
