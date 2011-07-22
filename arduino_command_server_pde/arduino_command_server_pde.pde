@@ -6,7 +6,6 @@ typedef void (* CommandFuncPtr)(String args); // typedef to the command
 struct Command {
   char code[5]; // the code used to call the command
   String help; // the snippet help version
-  String ext_help; // the extended help version
   CommandFuncPtr cmd; // point to the command to be called
 };
 
@@ -22,19 +21,11 @@ void setup() {
   Serial.begin(9600);
   sysprintln("Send a command to start. Help if you have questions");
   command = "";
-  com[0]=(Command){"HELP", "Prints this. Try HELP <CMD> for more", "", command_help};
-  com[1]=(Command){"LSA", "Lists status of all analog pins", 
-      "'LSA' Lists out the value and an analogRead() for each of the analog pins sequentially 1 per line", 
-      command_list_analog};
-  com[2]=(Command){"ANR", "Reads a specific analog pin", 
-      "'ANR [x]' Shows the current status of pin [x]", 
-      command_read_analog};
-  com[3]=(Command){"DIGM", "Sets the mode of a digital pin", 
-      "'DIGM [IN|OUT] [x]' Sets the mode of pin [x] as either INPUT or OUTPUT mode", 
-      command_digital_setmode};
-  com[4]=(Command){"DIGW", "Writes to the digital pin", 
-      "'DIGW [x] [HIGH|LOW]' Sets value of pin [x] as either HIGH or LOW", 
-      command_digital_write};
+  com[0]=(Command){"HELP", "Prints this. Try HELP <CMD> for more", command_help};
+  com[1]=(Command){"LSA", "Lists status of all analog pins", command_list_analog};
+  com[2]=(Command){"ANR", "Reads a specific analog pin", command_read_analog};
+  com[3]=(Command){"DIGM", "Sets the mode of a digital pin", command_digital_setmode};
+  com[4]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
 }
 
 void loop() {
@@ -114,8 +105,9 @@ void command_help(String args) {
     }
   } else {
     sysprintln("HELP");
-    sysprintln(com[cmd_index].code);
-    sysprintln(com[cmd_index].ext_help);
+    sysprint(com[cmd_index].code);
+    sysprint(": ");
+    sysprintln(com[cmd_index].help);
   }
 }
 
@@ -152,34 +144,34 @@ void command_read_analog(String args) {
 
 void command_digital_setmode(String args) {
   // this method sets the mode of the particular digital pin as either input or output
-  // args comes in as "[IN\OUT] [pin no]" where pin no can be double digit so needs to be processed.
+  // args comes in as "[pin no] [IN\OUT]" where pin no can be double digit so needs to be processed.
   if (args.length() < 4) {
     sysprintln("501 Arguments not supplied");
     return;
   }
   String argv[2];
   split(' ', args, argv, 1);
-  if (argv[1].length() < 1 || argv[1].length() > 2) {
+  if (argv[0].length() < 1 || argv[0].length() > 2) {
       sysprintln("502 Pin number incorrect");
       return;
   }
   // now we get the proper pin number which can be a maximum of 2 chars
   // note anything dodgey and it bails to 0
-  int pin = atoi(&argv[1][0]);
+  int pin = atoi(&argv[0][0]);
   
   // now we determine the mode.
-  if (argv[0].length() > 3) {
+  if (argv[1].length() > 3) {
     sysprintln("503 Please use IN or OUT only");
     return;
   }
-  if (argv[0].equalsIgnoreCase("IN")) {
+  if (argv[1].equalsIgnoreCase("IN")) {
     pinMode(pin, INPUT);
     sysprint("210 set pin #");
     sysprint(pin);
     sysprintln(" to INPUT");
     return;
   }
-  if (argv[0].equalsIgnoreCase("OUT")) {
+  if (argv[1].equalsIgnoreCase("OUT")) {
     pinMode(pin, OUTPUT);
     sysprint("210 set pin #");
     sysprint(pin);
