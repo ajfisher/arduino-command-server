@@ -24,3 +24,12 @@ Contribution
 Contribution is via the GitHub repo at https://github.com/ajfisher/arduino-command-server plase fork and hack away as much as you like - the more the merrier!
 
 Issues should be raised as via the issue tracker at GitHub on the link above.
+
+To Do:
+------
+
+* Add digital read
+* add ability to cycle from one state to another via pwm shifting
+* wrap code to connect via network not just serial
+* be able to set network params
+* 
