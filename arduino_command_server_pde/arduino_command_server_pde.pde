@@ -24,8 +24,9 @@ void setup() {
   com[0]=(Command){"HELP", "Prints this. Try HELP <CMD> for more", command_help};
   com[1]=(Command){"LSA", "Lists status of all analog pins", command_list_analog};
   com[2]=(Command){"ANR", "Reads a specific analog pin", command_read_analog};
-  com[3]=(Command){"DIGM", "Sets the mode of a digital pin", command_digital_setmode};
-  com[4]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
+  com[3]=(Command){"ANW", "Writes to an analog pin", command_analog_write};
+  com[4]=(Command){"PINM", "Sets the mode of a digital pin [pin IN|OUT]", command_setmode};
+  com[5]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
 }
 
 void loop() {
@@ -142,7 +143,7 @@ void command_read_analog(String args) {
     sysprintln(analogRead((pin)));
 }
 
-void command_digital_setmode(String args) {
+void command_setmode(String args) {
   // this method sets the mode of the particular digital pin as either input or output
   // args comes in as "[pin no] [IN\OUT]" where pin no can be double digit so needs to be processed.
   if (args.length() < 4) {
@@ -217,8 +218,34 @@ void command_digital_write (String args) {
     return;
   }
   // if you've dropped through to here then the command was mush.
-  sysprintln("503 Please use HIGH or LOW only");
-  
+  sysprintln("503 Please use HIGH or LOW only");  
+}
+
+void command_analog_write(String args) {
+  // this function takes the pin and a value to set for PWM and then does it.
+  if (args.length() < 3) { // single digit pin + space + at least one digit
+    sysprintln("Pin # and value not supplied");
+    return;
+  }
+  String argv[2];
+  split(' ', args, argv, 1);
+  if (argv[0].length() < 1 || argv[0].length() > 2) {
+      sysprintln("502 Pin number is incorrect");
+      return;
+  }
+  int pin = atoi(&argv[0][0]);
+  // now we determine the mode.
+  if (argv[1].length() > 3) {
+    sysprintln("503 Please use a value 0-255");
+    return;
+  }
+  int pwm = atoi(&argv[1][0]);
+  if (pwm > 255) {
+    sysprintln("503 Please use a value 0-255");
+    return;
+  }
+  // if you've made it here then do the job.
+  analogWrite(pin, pwm);
 }
 
 void sysprint(String str) {
