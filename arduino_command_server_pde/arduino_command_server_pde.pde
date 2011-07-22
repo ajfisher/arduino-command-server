@@ -32,12 +32,9 @@ void setup() {
   com[3]=(Command){"DIGM", "Sets the mode of a digital pin", 
       "'DIGM [IN|OUT] [x]' Sets the mode of pin [x] as either INPUT or OUTPUT mode", 
       command_digital_setmode};
-  com[4]=(Command){"DIGH", "Sets digital pin [X] HIGH", 
-      "'DIGH [x]' Asserts pin [X] to HIGH", 
-      command_digital_high};
-  com[4]=(Command){"DIGL", "Sets digital pin [X] LOW", 
-      "'DIGL [x]' Asserts pin [X] to LOW", 
-      command_digital_low};  
+  com[4]=(Command){"DIGW", "Writes to the digital pin", 
+      "'DIGW [x] [HIGH|LOW]' Sets value of pin [x] as either HIGH or LOW", 
+      command_digital_write};
 }
 
 void loop() {
@@ -193,34 +190,43 @@ void command_digital_setmode(String args) {
   sysprintln("503 Please use IN or OUT only");
 }
 
-void command_digital_high(String args) {
-  // sets a digital pin high.
-  if (args.length() == 0) {
-    sysprintln("501 Pin # not supplied");
+void command_digital_write (String args) {
+  // sets a digital pin high or low based on what value is passed.
+  // params are the pin number then HIGH or LOW
+  if (args.length() < 5) { // single digit pin + space + LOW
+    sysprintln("Pin # and state not supplied");
     return;
   }
-  // now we get the proper pin number which can be a maximum of 2 chars
-  // note anything dodgey and it bails to 0
-  int pin = atoi(&args[0]);
-  digitalWrite(pin, HIGH);
-  sysprint("210 set pin #");
-  sysprint(pin);
-  sysprintln(" HIGH");
-}
+  String argv[2];
+  split(' ', args, argv, 1);
+  if (argv[0].length() < 1 || argv[0].length() > 2) {
+      sysprintln("502 Pin number incorrect");
+      return;
+  }
+  int pin = atoi(&argv[0][0]);
 
-void command_digital_low(String args) {
-  // sets a digital pin high.
-  if (args.length() == 0) {
-    sysprintln("501 Pin # not supplied");
+  // now we determine the mode.
+  if (argv[1].length() > 4) {
+    sysprintln("503 Please use HIGH or LOW only");
     return;
   }
-  // now we get the proper pin number which can be a maximum of 2 chars
-  // note anything dodgey and it bails to 0
-  int pin = atoi(&args[0]);
-  digitalWrite(pin, LOW);
-  sysprint("210 set pin #");
-  sysprint(pin);
-  sysprintln(" LOW");
+  if (argv[1].equalsIgnoreCase("HIGH")) {
+    digitalWrite(pin, HIGH);
+    sysprint("210 set pin #");
+    sysprint(pin);
+    sysprintln(" HIGH");
+    return;
+  }
+  if (argv[1].equalsIgnoreCase("LOW")) {
+    digitalWrite(pin, LOW);
+    sysprint("210 set pin #");
+    sysprint(pin);
+    sysprintln(" LOW");
+    return;
+  }
+  // if you've dropped through to here then the command was mush.
+  sysprintln("503 Please use HIGH or LOW only");
+  
 }
 
 void sysprint(String str) {
