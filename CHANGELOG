@@ -1,0 +1,14 @@
+Version 0.2 (22 July, 2011)
+---------------------------
+
+* Command line functions working for:
+    * Help
+    * List analog pins
+    * Read a single analog pin
+    * Set the pin mode for a digital pin.
+
+
+Version 0.1 (19 July, 2011)
+---------------------------
+
+* Got the default command line interpreter working and splitting the commands up (ajfisher)
