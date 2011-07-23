@@ -30,7 +30,7 @@ Issues should be raised as via the issue tracker at GitHub on the link above.
 To Do:
 ------
 
-* Add digital read
 * add ability to cycle from one state to another via pwm shifting
 * be able to set network params
 * move everything to a library to make it more useful
+* refactor ls, read and write functions to be more generic and free up some space.

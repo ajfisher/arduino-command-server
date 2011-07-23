@@ -50,8 +50,10 @@ void setup() {
   com[2]=(Command){"ANR", "Reads a specific analog pin", command_analog_read};
   com[3]=(Command){"ANW", "Writes to an analog pin", command_analog_write};
   com[4]=(Command){"PINM", "Sets the mode of a digital pin [pin IN|OUT]", command_setmode};
-  com[5]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
-  com[6]=(Command){"QUIT", "Quits this session gracefully", command_quit};
+  com[5]=(Command){"LSD", "Lists status of all digital pins", command_list_digital};
+  com[6]=(Command){"DIGW", "Writes to the digital pin", command_digital_write};
+  com[7]=(Command){"DIGR", "Reads the specified digital pin", command_digital_read};
+  com[8]=(Command){"QUIT", "Quits this session gracefully", command_quit};
   
 }
 
@@ -279,6 +281,38 @@ void command_setmode(String args) {
   }
   // if you've dropped through to here then the command was mush.
   client->println("503 Please use IN or OUT only");
+}
+
+void command_list_digital(String args) {
+  // list the current status of all the analog pins.
+  client->println("200 Digital Read all pins");
+  client->println("210 If using ethernet pins 10-13 are used");
+  for (int i=0; i<20; i++) {
+    client->print("211 D");
+    client->print(i);
+    client->print(" ");
+    client->println(digitalRead(i));
+  }
+}
+
+void command_digital_read(String args) {
+    // reads a specified digital pin
+    // argument passed in should simply be a number and it's that one we read.
+    // we do need to get both chars though because it can be 2 digits
+    if (args.length() <= 0) {
+      client->println("501 Pin number not supplied");
+      return;
+    }
+    if (args.length() > 2) {
+      client->println("502 Pin range too high or incorrect");
+      return;
+    }
+    // just convert it and if it gets something nasty it will go to zero.
+    int pin = atoi(&args[0]);
+    client->print("200 Digital read pin #");
+    client->println(pin);
+    client->print("211 ");
+    client->println(digitalRead((pin)));
 }
 
 void command_digital_write (String args) {

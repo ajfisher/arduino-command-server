@@ -7,6 +7,7 @@ Version 0.3 (23 July, 2011)
 * refactored all the printing to use a generic Print object so won't matter if you use Serial or Ethernet
 * added global ethclient var so ethernet functions have access to them.
 * added a heap of anti-telnet garbling code to command parser.
+* added digital read and list all digital pin functions
 
 
 Version 0.2 (22 July, 2011)
