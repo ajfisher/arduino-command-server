@@ -13,10 +13,12 @@ Requirements
 
 A stock Arduino Duemilanove or Uno are only supported at this time Arduino Mega is not properly supported (ie none of the pin counts are correct).
 
+If you want to use this over ethernet then you'll need an ethernet shield or something like a Freetronics EtherTen.
+
 Use
 ---
 
-At this point, fire up the sketch, load it on the Arduino and connect via a Serial Connection. From there start issuing commands and see what happens. 
+At this point, fire up the sketch, load it on the Arduino and connect via telnet. From there start issuing commands and see what happens. 
 
 Contribution
 ------------
@@ -30,6 +32,5 @@ To Do:
 
 * Add digital read
 * add ability to cycle from one state to another via pwm shifting
-* wrap code to connect via network not just serial
 * be able to set network params
-* 
+* move everything to a library to make it more useful
