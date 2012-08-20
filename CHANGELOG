@@ -1,3 +1,8 @@
+Version 0.3.1 (20 Aug, 2011)
+----------------------------
+
+* updated to properly work with Arduino 1.0 as nI had forgotten to do it - by @jjfalling with thanks.
+
 Version 0.3 (23 July, 2011)
 ---------------------------
 
